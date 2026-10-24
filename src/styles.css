@@ -80,11 +80,16 @@ code { color: #d6efbd; font: 12px/1.5 'DM Mono', monospace; word-break: break-wo
 .field-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
 .field-grid label { color: #8ca097; font-size: 10px; }
 .field-grid input { width: 100%; margin-top: 4px; padding: 6px 7px; outline: 0; color: #d9e6dd; border: 1px solid #32483e; border-radius: 3px; background: #15231f; font: 11px 'DM Mono'; }
+.field-select { width: 100%; margin-top: 4px; padding: 6px 7px; outline: 0; color: #d9e6dd; border: 1px solid #32483e; border-radius: 3px; background: #15231f; font: 11px 'DM Sans'; }
 .field-grid input:focus { border-color: var(--green); }
 .field-grid small { display: block; margin-top: 3px; color: #61766c; font-size: 9px; }
+.example-note { margin: 10px 0 0; color: #c49c6c; font-size: 10px; line-height: 1.45; }
 .support-row { display: flex; align-items: center; gap: 13px; margin-top: 13px; color: #778d83; font-size: 10px; }
 .support-row span { display: flex; align-items: center; gap: 5px; }
 .verified { color: #a5c678; }
+.verified { display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
+.verified:hover { color: var(--green2); }
+.checked-version { color: #71877b; font-size: 9px; }
 .details-toggle { display: flex; align-items: center; gap: 6px; margin-top: 16px; padding: 0; color: #8ea99b; border: 0; background: none; font-size: 10px; }
 .details-toggle:hover, .docs-link:hover { color: var(--green2); }
 .details-toggle svg { transition: .2s; }

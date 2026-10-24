@@ -15,7 +15,11 @@ const DOCS = {
   effect: 'https://minecraft.wiki/w/Commands/effect',
   summon: 'https://minecraft.wiki/w/Commands/summon',
   clear: 'https://minecraft.wiki/w/Commands/clear'
-  ,clone: 'https://minecraft.wiki/w/Commands/clone'
+  ,clone: 'https://minecraft.wiki/w/Commands/clone',
+  kill: 'https://minecraft.wiki/w/Commands/kill',
+  difficulty: 'https://minecraft.wiki/w/Difficulty',
+  setworldspawn: 'https://minecraft.wiki/w/Commands/setworldspawn',
+  locate: 'https://minecraft.wiki/w/Commands/locate'
 }
 
 const VERSIONS = {
@@ -100,7 +104,7 @@ const COMMANDS = [
   {
     id: 'gamemode-creative', title: 'Switch to Creative mode', category: 'Players',
     purpose: 'Change a player’s game mode to Creative.',
-    keywords: ['creative', 'gamemode', 'survival', 'mode', 'player'],
+    keywords: ['creative', 'gamemode', 'survival', 'mode', 'player', 'fly', 'flying', 'flight'],
     command: { Java: 'gamemode creative @s', Bedrock: 'gamemode creative @s' },
     fields: [{ key: 'target', label: 'Player or selector', value: '@s', hint: '@s = executor' }],
     editions: ['Java', 'Bedrock'], versions: { Java: ['1.13+'], Bedrock: ['1.2+'] },
@@ -155,6 +159,54 @@ const COMMANDS = [
     doc: DOCS.clear, verified: true
   },
   {
+    id: 'kill-entity', title: 'Remove an entity', category: 'Players',
+    purpose: 'Instantly remove a player, mob, or other entity selected by a target selector.',
+    keywords: ['kill', 'remove', 'delete', 'entity', 'mob', 'player', 'destroy'],
+    command: { Java: 'kill @e[type=minecraft:zombie]', Bedrock: 'kill @e[type=zombie]' },
+    fields: [{ key: 'target', label: 'Player or selector', value: '@e[type=minecraft:zombie]', bedrockValue: '@e[type=zombie]', hint: 'Be careful: kill is permanent' }],
+    editions: ['Java', 'Bedrock'], versions: { Java: ['1.13+'], Bedrock: ['1.2+'] },
+    run: ['Chat', 'Command block', 'Server console'], cheats: true, permission: 'Operator / cheats required',
+    block: 'Impulse • Needs Redstone • Place and activate once',
+    errors: ['Selector matched no entities: check the target selector and loaded chunks.', 'No permission: enable Allow Cheats or run as an operator.'],
+    doc: DOCS.kill, verified: true
+  },
+  {
+    id: 'difficulty-set', title: 'Set the difficulty', category: 'World',
+    purpose: 'Set the world difficulty to peaceful, easy, normal, or hard.',
+    keywords: ['difficulty', 'peaceful', 'easy', 'normal', 'hard', 'change'],
+    command: { Java: 'difficulty normal', Bedrock: 'difficulty normal' },
+    fields: [{ key: 'difficulty', label: 'Difficulty', value: 'normal', hint: 'peaceful, easy, normal, or hard' }],
+    editions: ['Java', 'Bedrock'], versions: { Java: ['1.13+'], Bedrock: ['1.2+'] },
+    run: ['Chat', 'Command block', 'Server console'], cheats: true, permission: 'Operator / cheats required',
+    block: 'Impulse • Needs Redstone • Place and activate once',
+    errors: ['Invalid difficulty: use peaceful, easy, normal, or hard.'],
+    doc: DOCS.difficulty, verified: true
+  },
+  {
+    id: 'set-world-spawn', title: 'Set the world spawn', category: 'World',
+    purpose: 'Set the default spawn point for new players and respawns.',
+    keywords: ['spawn', 'world spawn', 'set', 'home', 'respawn', 'coordinates'],
+    command: { Java: 'setworldspawn 0 64 0', Bedrock: 'setworldspawn 0 64 0' },
+    fields: [{ key: 'x', label: 'X coordinate', value: '0' }, { key: 'y', label: 'Y coordinate', value: '64' }, { key: 'z', label: 'Z coordinate', value: '0' }],
+    editions: ['Java', 'Bedrock'], versions: { Java: ['1.13+'], Bedrock: ['1.2+'] },
+    run: ['Chat', 'Command block', 'Server console'], cheats: true, permission: 'Operator / cheats required',
+    block: 'Impulse • Needs Redstone • Place and activate once',
+    errors: ['Check that the coordinates are inside the world border.', 'On a server, ask an operator to run the command.'],
+    doc: DOCS.setworldspawn, verified: true
+  },
+  {
+    id: 'locate-structure', title: 'Locate a structure', category: 'World',
+    purpose: 'Find the nearest structure, such as a village, in the current dimension.',
+    keywords: ['locate', 'find', 'structure', 'village', 'biome', 'nearest'],
+    command: { Java: 'locate structure minecraft:village_plains', Bedrock: 'locate structure village' },
+    fields: [{ key: 'structure', label: 'Structure ID', value: 'minecraft:village_plains', bedrockValue: 'village', hint: 'Use an ID supported by your edition' }],
+    editions: ['Java', 'Bedrock'], versions: { Java: ['1.19+'], Bedrock: ['1.19+'] },
+    run: ['Chat', 'Command block', 'Server console'], cheats: true, permission: 'Operator / cheats required',
+    block: 'Impulse • Needs Redstone • Place and activate once',
+    errors: ['Unknown structure: Java and Bedrock use different IDs.', 'No structure found: try a different structure or explore farther.'],
+    doc: DOCS.locate, verified: true
+  },
+  {
     id: 'clone-structure', title: 'Clone or move a structure', category: 'World',
     purpose: 'Copy blocks from a rectangular area to a destination, or move them and replace the original with air.',
     keywords: ['clone', 'cloning', 'copy', 'copies', 'building', 'buildings', 'house', 'structure', 'structures', 'blocks', 'duplicate', 'duplicating', 'move', 'moving', 'relocate'],
@@ -163,10 +215,10 @@ const COMMANDS = [
       Bedrock: 'clone 0 64 0 10 74 10 100 64 100 replace normal'
     },
     fields: [
-      { key: 'beginX', label: 'Corner 1 X', value: '0' }, { key: 'beginY', label: 'Corner 1 Y', value: '64' }, { key: 'beginZ', label: 'Corner 1 Z', value: '0' },
-      { key: 'endX', label: 'Corner 2 X', value: '10' }, { key: 'endY', label: 'Corner 2 Y', value: '74' }, { key: 'endZ', label: 'Corner 2 Z', value: '10' },
-      { key: 'destX', label: 'Destination X', value: '100' }, { key: 'destY', label: 'Destination Y', value: '64' }, { key: 'destZ', label: 'Destination Z', value: '100' },
-      { key: 'mode', label: 'Copy mode', value: 'replace normal', hint: 'Use replace move to move, not copy' }
+      { key: 'beginX', label: 'Corner 1 X', value: '', example: '0', hint: 'Example: 0' }, { key: 'beginY', label: 'Corner 1 Y', value: '', example: '64', hint: 'Example: 64' }, { key: 'beginZ', label: 'Corner 1 Z', value: '', example: '0', hint: 'Example: 0' },
+      { key: 'endX', label: 'Corner 2 X', value: '', example: '10', hint: 'Example: 10' }, { key: 'endY', label: 'Corner 2 Y', value: '', example: '74', hint: 'Example: 74' }, { key: 'endZ', label: 'Corner 2 Z', value: '', example: '10', hint: 'Example: 10' },
+      { key: 'destX', label: 'Destination X', value: '', example: '100', hint: 'Example: 100' }, { key: 'destY', label: 'Destination Y', value: '', example: '64', hint: 'Example: 64' }, { key: 'destZ', label: 'Destination Z', value: '', example: '100', hint: 'Example: 100' },
+      { key: 'mode', label: 'Action', value: 'copy', options: [{ value: 'replace normal', label: 'Copy (leave original)' }, { value: 'replace move', label: 'Move (clear original)' }], hint: 'Copy leaves the original; move clears it' }
     ],
     editions: ['Java', 'Bedrock'], versions: { Java: ['1.13+'], Bedrock: ['1.2+'] },
     run: ['Chat', 'Command block', 'Server console'], cheats: true, permission: 'Operator / cheats required',
@@ -248,7 +300,14 @@ function buildCommand(item, edition, values) {
     : `effect ${merged.target} speed ${merged.duration} ${merged.amplifier} true`
   if (item.id === 'summon-zombie') return `summon ${edition === 'Java' ? merged.entity : merged.entity.replace(/^minecraft:/, '')} ${merged.x} ${merged.y} ${merged.z}`
   if (item.id === 'clear-inventory') return `clear ${merged.target}`
-  if (item.id === 'clone-structure') return `clone ${merged.beginX} ${merged.beginY} ${merged.beginZ} ${merged.endX} ${merged.endY} ${merged.endZ} ${merged.destX} ${merged.destY} ${merged.destZ} ${merged.mode}`
+  if (item.id === 'clone-structure') {
+    const coordinate = (key) => merged[key] || `<${key}>`
+    return `clone ${coordinate('beginX')} ${coordinate('beginY')} ${coordinate('beginZ')} ${coordinate('endX')} ${coordinate('endY')} ${coordinate('endZ')} ${coordinate('destX')} ${coordinate('destY')} ${coordinate('destZ')} ${merged.mode === 'copy' ? 'replace normal' : merged.mode || 'replace normal'}`
+  }
+  if (item.id === 'kill-entity') return `kill ${merged.target}`
+  if (item.id === 'difficulty-set') return `difficulty ${merged.difficulty}`
+  if (item.id === 'set-world-spawn') return `setworldspawn ${merged.x} ${merged.y} ${merged.z}`
+  if (item.id === 'locate-structure') return `locate structure ${edition === 'Java' ? merged.structure : merged.structure.replace(/^minecraft:village_plains$/, 'village')}`
   return item.command[edition]
 }
 
@@ -281,6 +340,13 @@ function App() {
     const maxScore = ranked[0].score
     return ranked.filter(({ score }) => score >= Math.max(3, maxScore - 1.5)).map(({ item }) => item)
   }, [edition, category, activeQuery, favorites, showFavorites])
+  const relatedSuggestions = useMemo(() => COMMANDS
+    .filter(item => item.editions.includes(edition))
+    .map(item => ({ item, score: searchScore(item, activeQuery) }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4)
+    .map(({ item }) => item), [edition, activeQuery])
 
   const runSearch = (value = query) => {
     setActiveQuery(value)
@@ -332,7 +398,7 @@ function App() {
 
           <section className="results">
             <div className="results-header"><div><p className="section-kicker">{showFavorites ? 'YOUR COLLECTION' : activeQuery ? 'SEARCH RESULTS' : 'START HERE'}</p><h2>{showFavorites ? 'Saved commands' : activeQuery ? <>Results for <span>“{activeQuery}”</span></> : 'Popular commands'}</h2></div><div className="result-meta">{results.length} {results.length === 1 ? 'command' : 'commands'} <span className="edition-pill">{edition} {version}</span></div></div>
-            {results.length === 0 && <div className="empty-state"><Search size={32} /><h3>I couldn’t find that in the command library.</h3><p>This request may need an add-on, mod, plugin, datapack, or a command that is not in the curated collection. Try one of these related searches:</p><div className="related-searches">{['clone a building', 'give everyone diamonds', 'make it daytime', 'teleport me'].map(item => <button key={item} onClick={() => { setQuery(item); runSearch(item) }}>{item}</button>)}</div><button onClick={() => { setQuery(''); setActiveQuery(''); setCategory('All commands'); setShowFavorites(false) }}>Show all commands</button></div>}
+            {results.length === 0 && <div className="empty-state"><Search size={32} /><h3>I couldn’t find that in the command library.</h3><p>This request may need an add-on, mod, plugin, datapack, or a command that is not in the curated collection. Try one of these related searches:</p><div className="related-searches">{(relatedSuggestions.length ? relatedSuggestions : COMMANDS.filter(item => item.editions.includes(edition)).slice(0, 4)).map(item => <button key={item.id} onClick={() => { setQuery(item.title); runSearch(item.title) }}>{item.title}</button>)}</div><button onClick={() => { setQuery(''); setActiveQuery(''); setCategory('All commands'); setShowFavorites(false) }}>Show all commands</button></div>}
             <div className="command-grid">{results.map(item => {
               const isExpanded = expanded === item.id
               const commandText = buildCommand(item, edition, custom[item.id])
@@ -340,8 +406,8 @@ function App() {
                 <div className="card-top"><span className="category-label">{item.category}</span><button className={favorites.includes(item.id) ? 'favorite active' : 'favorite'} onClick={() => toggleFavorite(item.id)} aria-label="Toggle favorite"><Heart size={18} fill={favorites.includes(item.id) ? 'currentColor' : 'none'} /></button></div>
                 <h3>{item.title}</h3><p className="purpose">{item.purpose}</p>
                 <div className="command-code"><code><span className="code-prefix">/</span>{commandText}</code><button onClick={() => copyCommand(item)} className={copied === item.id ? 'copy-button copied' : 'copy-button'}>{copied === item.id ? <><Check size={16} /> Copied</> : <><Clipboard size={16} /> Copy</>}</button></div>
-                {item.fields.length > 0 && <div className="customizer"><div className="customizer-title"><Settings2 size={15} /> Customize command</div><div className="field-grid">{item.fields.map(field => <label key={field.key}>{field.label}<input value={custom[item.id]?.[field.key] ?? (edition === 'Bedrock' && field.bedrockValue ? field.bedrockValue : field.value)} onChange={event => setField(item.id, field.key, event.target.value)} /><small>{field.hint}</small></label>)}</div></div>}
-                <div className="support-row"><span><Terminal size={14} /> {item.run[0]}</span><span className="verified"><Check size={13} /> Verified syntax</span></div>
+                {item.fields.length > 0 && <div className="customizer"><div className="customizer-title"><Settings2 size={15} /> Customize command</div><div className="field-grid">{item.fields.map(field => { const fieldValue = custom[item.id]?.[field.key] ?? (edition === 'Bedrock' && field.bedrockValue ? field.bedrockValue : field.value); const hint = item.id === 'teleport-player' && field.key === 'target' && fieldValue === '@s' ? '@s = the command executor (you)' : field.hint; return <label key={field.key}>{field.label}{field.options ? <select className="field-select" value={fieldValue} onChange={event => setField(item.id, field.key, event.target.value)}>{field.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select> : <input placeholder={field.example ? `Example: ${field.example}` : undefined} value={fieldValue} onChange={event => setField(item.id, field.key, event.target.value)} />}<small>{hint}</small></label> })}</div>{item.id === 'clone-structure' && <p className="example-note">Coordinates are examples until you enter your own corners. The template is not a finished command yet.</p>}</div>}
+                <div className="support-row"><span><Terminal size={14} /> {item.run[0]}</span><a className="verified" href={item.doc} target="_blank" rel="noreferrer" title={`Source: Minecraft Wiki · checked for ${edition} ${version}`}><Check size={13} /> Verified syntax · docs</a><span className="checked-version">{edition} {item.versions[edition].join(', ')}</span></div>
                 <button className="details-toggle" onClick={() => setExpanded(isExpanded ? null : item.id)}>{isExpanded ? 'Hide details' : 'View usage, permissions & fixes'}<ChevronDown size={16} className={isExpanded ? 'rotate' : ''} /></button>
                 {item.followUp && <div className="follow-up"><strong>To finish this command, I need:</strong><ul>{item.followUp.map(question => <li key={question}>{question}</li>)}</ul><p>{item.coordinateHelp}</p><small><strong>Copy vs move:</strong> copy leaves the original in place. Move transfers the blocks and clears the original area, so choose the move option only when that is intended.</small></div>}
                 {isExpanded && <div className="details"><div className="detail-columns"><div><h4>Supported</h4><p><strong>{edition}</strong> · {item.versions[edition].join(', ')}</p><h4>Permissions</h4><p>{item.permission}. Cheats must be enabled in single-player worlds.</p></div><div><h4>Run it in</h4><p>{item.run.join(' · ')}</p><h4>Command block setup</h4><p>{item.block}</p></div></div><div className="errors"><h4>Common errors</h4>{item.errors.map(error => <p key={error}>• {error}</p>)}</div><a className="docs-link" href={item.doc} target="_blank" rel="noreferrer"><BookOpen size={15} /> Read the documentation <ExternalLink size={13} /></a></div>}
